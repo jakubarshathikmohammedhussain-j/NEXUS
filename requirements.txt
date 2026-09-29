@@ -4,3 +4,4 @@ pandas
 numpy
 plotly
 db-dtypes
+google-generativeai
