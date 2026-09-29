@@ -91,10 +91,15 @@ def load_historical_telemetry():
     df['volume_anomaly'] = df['volume'] > (2.5 * df['vol_20d_ma'])
     return df
 
-@st.cache_data(ttl=3600) # Cache the AI response for 1 hour to prevent API spam
+@st.cache_data(ttl=3600)
 def generate_cognitive_brief(dispersion, rsi, anomalies, strong_buys, top_gainers, top_losers):
     try:
-        genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+        # Safe secret extraction with fallback check
+        api_key = st.secrets.get("GEMINI_API_KEY")
+        if not api_key:
+            return "COGNITIVE ENGINE STANDBY: GEMINI_API_KEY environment variable not detected in Streamlit secrets scope. Please verify TOML syntax."
+            
+        genai.configure(api_key=api_key)
         model = genai.GenerativeModel('gemini-1.5-flash')
         prompt = f"""
         Act as the O.M.E.G.A. Cognitive Engine, an autonomous quantitative strategist.
@@ -116,7 +121,8 @@ def generate_cognitive_brief(dispersion, rsi, anomalies, strong_buys, top_gainer
         response = model.generate_content(prompt)
         return response.text
     except Exception as e:
-        return f"COGNITIVE ENGINE OFFLINE: {e}"
+        return f"COGNITIVE ENGINE EXCEPTION: {e}"
+        
 
 df_history = load_historical_telemetry()
 if not df_history.empty: df_latest = df_history.sort_values('timestamp').groupby('ticker').tail(1).copy()
