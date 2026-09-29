@@ -197,9 +197,17 @@ with tab2:
                 line=dict(color='#38bdf8', width=2)
             ))
             fig_radar.update_layout(
-                polar=dict(radialaxis=dict(visible=False, range=[0, 100]), angularaxis=dict(color="#a1a1aa", font=dict(family="Courier New", size=10)), bgcolor="#050505"),
-                paper_bgcolor="rgba(0,0,0,0)", margin=dict(l=30, r=30, t=30, b=30), height=250, showlegend=False
+                polar=dict(
+                    radialaxis=dict(visible=False, range=[0, 100]), 
+                    angularaxis=dict(color="#a1a1aa", tickfont=dict(family="Courier New", size=10)), 
+                    bgcolor="#050505"
+                ),
+                paper_bgcolor="rgba(0,0,0,0)", 
+                margin=dict(l=30, r=30, t=30, b=30), 
+                height=250, 
+                showlegend=False
             )
+            
 
             st.markdown(f"""
             <div style="background: #050505; border: 1px solid #1e293b; padding: 20px; border-radius: 4px; box-shadow: inset 0 0 20px rgba(0,0,0,1);">
