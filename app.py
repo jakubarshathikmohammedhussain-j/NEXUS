@@ -94,13 +94,15 @@ def load_historical_telemetry():
 @st.cache_data(ttl=3600)
 def generate_cognitive_brief(dispersion, rsi, anomalies, strong_buys, top_gainers, top_losers):
     try:
-        # Safe secret extraction with fallback check
         api_key = st.secrets.get("GEMINI_API_KEY")
         if not api_key:
-            return "COGNITIVE ENGINE STANDBY: GEMINI_API_KEY environment variable not detected in Streamlit secrets scope. Please verify TOML syntax."
+            return "COGNITIVE ENGINE STANDBY: GEMINI_API_KEY missing."
             
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        
+        # Explicitly targeting Gemini 3.5 Flash Lite
+        model = genai.GenerativeModel('gemini-3.5-flash-lite')
+        
         prompt = f"""
         Act as the O.M.E.G.A. Cognitive Engine, an autonomous quantitative strategist.
         Write a concise, 3-bullet-point executive macroeconomic briefing based on today's telemetry.
@@ -122,6 +124,7 @@ def generate_cognitive_brief(dispersion, rsi, anomalies, strong_buys, top_gainer
         return response.text
     except Exception as e:
         return f"COGNITIVE ENGINE EXCEPTION: {e}"
+        
         
 
 df_history = load_historical_telemetry()
